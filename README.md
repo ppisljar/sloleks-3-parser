@@ -36,12 +36,14 @@ GROUP BY word
 ``` 
 
 ## Tell me more about Sloleks
-Sloleks is the reference morphological lexicon for Slovenian language, developed to be used in NLP applications and 
+[Sloleks](http://eng.slovenscina.eu/sloleks/opis) is the reference morphological lexicon for Slovenian language, developed to be used in NLP applications and 
 language manuals. Encoded in LMF XML, the lexicon contains approx. 100,000 most frequent Slovenian lemmas, their 
 inflected or derivative word forms and the corresponding grammatical description. Lemmatization rules, part-of-speech 
 categorization and the set of feature-value pairs follow the JOS morphosyntactic specifications. In addition to 
 grammatical information, each word form is also given the information on its absolute corpus frequency and its 
 compliance with the reference language standard.
+
+More information about Sloleks can be found [here](http://eng.slovenscina.eu/sloleks/opis).
 
 
 [1]: https://en.wikipedia.org/wiki/Lemma_(morphology)

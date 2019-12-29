@@ -25,7 +25,7 @@ python convert.py -i Sloleks2.0.LMF.zip -x sloleks_clarin_2.0.xml -v
 After about 45 min the data will get transferred to a 1 GB SQLite database called `sloleks.db`.
 
 To extract the data for further use in my Chrome extension I exported it with this SQL query:
-```sqlite
+```sql
 SELECT
        LOWER(fr.zapis_oblike) AS 'word',
        LOWER(l.zapis_oblike) AS 'lemma'

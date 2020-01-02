@@ -7,7 +7,7 @@ and put it in a SQLite database so that it can be used for further processing.
 ## Why did you convert the data from XML to SQL?
 This parser played a key part in building my final project for [Harvard's CS50x course](https://cs50.harvard.edu/x/) as 
 it allowed me to extract about 100.000 [lemmas][1] of the Slovenian language and use them an IndexedDB in a 
-[Chrome extension, which was my final project](https://github.com/techouse/termania-chrome-extension).
+Chrome extension, which was my final project.
 
 ## How did you extract the XML data?
 Like this:

@@ -24,7 +24,7 @@ python convert.py -i Sloleks2.0.LMF.zip -x sloleks_clarin_2.0.xml -v
 
 After about 45 min the data will get transferred to a 1 GB SQLite database called `sloleks.db`.
 
-To extract the data for further use in my Chrome extension I exported it with this SQL query:
+To extract the data for further use in my [Chrome][2] and [Firefox][3] extensions I exported it with this SQL query:
 ```sql
 SELECT
        LOWER(fr.zapis_oblike) AS 'word',
@@ -47,3 +47,5 @@ More information about Sloleks can be found [here](http://eng.slovenscina.eu/slo
 
 
 [1]: https://en.wikipedia.org/wiki/Lemma_(morphology)
+[2]: https://github.com/techouse/termania-chrome-extension
+[3]: https://github.com/techouse/termania-firefox-extension

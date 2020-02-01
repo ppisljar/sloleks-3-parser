@@ -26,10 +26,11 @@ After about 45 min the data will get transferred to a 1 GB SQLite database calle
 
 To extract the data for further use in my [Chrome][2] and [Firefox][3] extensions I exported it with this SQL query:
 ```sql
-SELECT
-       LOWER(fr.zapis_oblike) AS 'word',
+SELECT LOWER(fr.zapis_oblike) AS 'word',
+       wf.msd,
        LOWER(l.zapis_oblike) AS 'lemma'
 FROM form_representations fr
+JOIN word_forms wf on fr.word_form_id = wf.id
 JOIN lemmas l ON fr.lexical_entry_id = l.lexical_entry_id
 WHERE SUBSTR(l.zapis_oblike, 1, 1) NOT IN ('0', '1','2','3','4','5','6','7','8','9')
 GROUP BY word

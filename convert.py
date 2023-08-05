@@ -8,7 +8,7 @@ import logging
 from os.path import isfile, realpath
 
 from app import session_scope
-from app.models import LexicalEntry, WordForm, FormRepresentation, Lemma
+from app.models import LexicalEntry, WordForm
 from app.parser import Parser
 from app.progress_bar import TqdmStream
 
@@ -17,28 +17,23 @@ class Sloleks:
     def __init__(self, *args, **kwargs):
         self._verbose = kwargs.get("verbose", False)
         self._logger = self._setup_logger(log_file=kwargs.get("log_file", None))
-        self._file = kwargs.get("file")
-        self._xml = kwargs.get("xml")
-        if not self._file:
-            raise ValueError("Please define a source JSON file!")
-        elif not isfile(realpath(self._file)):
+        self._file = "Sloleks.3.0.zip"
+        if not isfile(realpath(self._file)):
             raise FileNotFoundError("{} does not exist".format(self._file))
 
     def get_data(self):
         with session_scope(logger=self._logger) as session:
             p = Parser(session=session, logger=self._logger, verbose=self._verbose)
 
+            i = 0
             for lx in tqdm(
-                p.get_lexical_entries(zip_filename=self._file, xml_filename=self._xml)
+                p.get_lexical_entries(zip_filename=self._file)
             ):
                 if not session.query(LexicalEntry).get(lx["id"]):
+                    i = i+1
                     lexical_entry = LexicalEntry(id=lx["id"])
 
                     session.add(lexical_entry)
-
-                    for le in lx["lemmas"]:
-                        lemma = Lemma(**le, lexical_entry_id=lx["id"])
-                        session.add(lemma)
 
                     for wf in lx["word_forms"]:
                         word_form = WordForm(
@@ -49,17 +44,11 @@ class Sloleks:
                             },
                             lexical_entry_id=lx["id"]
                         )
+                        i = i + 1
                         session.add(word_form)
 
-                        for wf_rep in wf["form_representations"]:
-                            form_representation = FormRepresentation(
-                                **wf_rep,
-                                lexical_entry_id=lx["id"]
-                            )
-                            form_representation.word_form = word_form
-                            session.add(form_representation)
-
-                    session.commit()
+                    if 1 % 1000 == 0:
+                        session.commit()
                 else:
                     if self._verbose:
                         self._logger.info(
@@ -89,16 +78,6 @@ if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "-i", "--input-file", dest="file", help="Input ZIP file", required=True
-    )
-    parser.add_argument(
-        "-x",
-        "--xml-file",
-        dest="xml",
-        default="sloleks_clarin_2.0.xml",
-        help="Input XML file. Defaults to sloleks_clarin_2.0.xml",
-    )
     parser.add_argument("-l", "--log-file", dest="log_file", help="Log file")
     parser.add_argument(
         "-v",
@@ -109,13 +88,9 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    if len(sys.argv) == 1:
-        parser.print_help()
-        sys.exit(1)
-
     try:
         lex = Sloleks(
-            file=args.file, xml=args.xml, log_file=args.log_file, verbose=args.verbose
+            log_file=args.log_file, verbose=args.verbose
         )
         lex.get_data()
     except KeyboardInterrupt:

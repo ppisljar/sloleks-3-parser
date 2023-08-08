@@ -134,3 +134,4 @@ Sloleks*.zip
 *.db-journal
 *.db.gz
 *.json
+._*

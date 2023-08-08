@@ -77,17 +77,31 @@ class Parser:
                 if event == "start":
                     previous = current
                     current = element.tag
+
+                    lexical_entry["id"] = element.attrib["sloleksId"]
+                    lexical_entry["sloleks_key"] = element.attrib["sloleksKey"]
+                    lexical_entry["norma"] = element.attrib["type"]
+                    lexeme = element.find(".//lexeme")
+                    if lexeme is not None and lexeme.text is not None:
+                        lexical_entry["lexeme"] = lexeme.text.strip()
+
                 elif event == "end":
                     current = previous
                     previous = None
-                    lexical_entry["id"] = element.attrib["sloleksId"]
-                    lexical_entry["sloleks_key"] = element.attrib["sloleksKey"]
-                    lexical_entry["type"] = element.attrib["type"]
 
             elif element.tag == "grammar":
                 if event == "start":
                     previous = current
                     current = element.tag
+
+                    category = element.find(".//category")
+                    if category is not None and category.text is not None:
+                        lexical_entry["type"] = category.text.strip()
+                    
+                    subcategory = element.find(".//subcategory")
+                    if subcategory is not None and subcategory.text is not None:
+                        lexical_entry["pronaunciation"] = subcategory.text.strip()
+
                 elif event == "end":
                     current = previous
                     previous = None
@@ -101,9 +115,33 @@ class Parser:
                     if msd is not None and msd.text is not None:
                         word_form["msd"] = msd.text.strip()
 
-                    grammar_feature = element.find(".//grammarFeature[@name='vform']")
-                    if grammar_feature is not None and grammar_feature.text is not None:
-                        word_form["oblika"] = grammar_feature.text.strip()
+                    vform = element.find(".//grammarFeature[@name='vform']")
+                    if vform is not None and vform.text is not None:
+                        word_form["oblika"] = vform.text.strip()
+
+                    number = element.find(".//grammarFeature[@name='number']")
+                    if number is not None and number.text is not None:
+                        word_form["stevilo"] = number.text.strip()
+
+                    gender = element.find(".//grammarFeature[@name='gender']")
+                    if gender is not None and gender.text is not None:
+                        word_form["spol"] = gender.text.strip()
+
+                    degree = element.find(".//grammarFeature[@name='degree']")
+                    if degree is not None and degree.text is not None:
+                        word_form["stopnja"] = degree.text.strip()
+
+                    case = element.find(".//grammarFeature[@name='case']")
+                    if case is not None and case.text is not None:
+                        word_form["sklon"] = case.text.strip()
+
+                    definiteness = element.find(".//grammarFeature[@name='definiteness']")
+                    if definiteness is not None and definiteness.text is not None:
+                        word_form["dolocnost"] = definiteness.text.strip()
+
+                    person = element.find(".//grammarFeature[@name='person']")
+                    if person is not None and person.text is not None:
+                        word_form["oseba"] = person.text.strip()
 
                     orthography = element.find(".//orthography")
                     if orthography is not None:
@@ -126,6 +164,13 @@ class Parser:
                         sampa_form = first_pronunciation.find(".//form[@script='SAMPA']")
                         if sampa_form is not None and sampa_form.text is not None:
                             word_form["SAMPA_1"] = sampa_form.text.strip()
+
+
+                elif event == "end":
+                    current = previous
+                    previous = None
+                    lexical_entry["word_forms"].append(word_form)
+                    word_form = {}()
 
 
                 elif event == "end":

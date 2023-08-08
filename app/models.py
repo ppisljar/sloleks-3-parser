@@ -29,11 +29,11 @@ class WordForm(Base):
     stopnja = Column(String(32), nullable=True)
     sklon = Column(String(32), nullable=True)
     dolocnost = Column(String(32), nullable=True)
-    nikalnost = Column(String(32), nullable=True)
-    zivost = Column(String(32), nullable=True)
+    nikalnost = Column(String(32), nullable=True) #
+    zivost = Column(String(32), nullable=True) #
     spol = Column(String(32), nullable=True)
-    spol_svojine = Column(String(32), nullable=True)
-    stevilo_svojine = Column(String(32), nullable=True)
+    spol_svojine = Column(String(32), nullable=True) #
+    stevilo_svojine = Column(String(32), nullable=True) #
     oblika = Column(String(32), nullable=True)
     oseba = Column(String(32), nullable=True)
     zapis_oblike = Column(String(255), index=True)

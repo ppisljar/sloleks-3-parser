@@ -29,31 +29,37 @@ class Sloleks:
             for lx in tqdm(
                 p.get_lexical_entries(zip_filename=self._file)
             ):
+                i = i+1
+                lexical_entry = LexicalEntry(
+                    **{
+                        key: val
+                        for key, val in lx.items()
+                        if key not in {"word_forms"}
+                    },
+                )
                 if not session.query(LexicalEntry).get(lx["id"]):
-                    i = i+1
-                    lexical_entry = LexicalEntry(id=lx["id"])
-
                     session.add(lexical_entry)
-
-                    for wf in lx["word_forms"]:
-                        word_form = WordForm(
-                            **{
-                                key: val
-                                for key, val in wf.items()
-                                if key not in {"form_representations"}
-                            },
-                            lexical_entry_id=lx["id"]
-                        )
-                        i = i + 1
-                        session.add(word_form)
-
-                    if 1 % 1000 == 0:
-                        session.commit()
                 else:
-                    if self._verbose:
-                        self._logger.info(
-                            f"Skipping lexical entity: {lx['id']}"
-                        )
+                    #if self._verbose:
+                    self._logger.info(
+                        f"Skipping lexical entity: {lx['id']}"
+                    )
+
+                for wf in lx["word_forms"]:
+                    word_form = WordForm(
+                        **{
+                            key: val
+                            for key, val in wf.items()
+                            if key not in {"form_representations"}
+                        },
+                        lexical_entry_id=lx["id"]
+                    )
+                    i = i + 1
+                    session.add(word_form)
+
+                if 1 % 1000 == 0:
+                    session.commit()
+                
 
     @classmethod
     def _setup_logger(cls, log_file=None):

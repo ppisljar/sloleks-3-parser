@@ -30,11 +30,8 @@ python convert.py
 
 After about 45 min the data will get transferred to a 1 GB SQLite database called `sloleks.db`.
 
- @misc{11356/1745,
- title = {Morphological lexicon Sloleks 3.0},
- author = {{\v C}ibej, Jaka and Gantar, Kaja and Dobrovoljc, Kaja and Krek, Simon and Holozan, Peter and Erjavec, Toma{\v z} and Romih, Miro and Arhar Holdt, {\v S}pela and Krsnik, Luka and Robnik-{\v S}ikonja, Marko},
- url = {http://hdl.handle.net/11356/1745},
- note = {Slovenian language resource repository {CLARIN}.{SI}},
- copyright = {Creative Commons - Attribution-{ShareAlike} 4.0 International ({CC} {BY}-{SA} 4.0)},
- issn = {2820-4042},
- year = {2022} }
+## Citations
+ title = {Morphological lexicon Sloleks 3.0},	
+ author = {{\v C}ibej, Jaka and Gantar, Kaja and Dobrovoljc, Kaja and Krek, Simon and Holozan, Peter and Erjavec, Toma{\v z} and Romih, Miro and Arhar Holdt, {\v S}pela and Krsnik, Luka and Robnik-{\v S}ikonja, Marko},	 Čibej, Jaka; et al., 2022, 
+ url = {http://hdl.handle.net/11356/1745},	  Morphological lexicon Sloleks 3.0, Slovenian language resource repository CLARIN.SI, ISSN 2820-4042, 
+ note = {Slovenian language resource repository {CLARIN}.{SI}},	  http://hdl.handle.net/11356/1745.

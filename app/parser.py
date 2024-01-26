@@ -67,9 +67,11 @@ class Parser:
                 if event == "start":
                     previous = current
                     current = element.tag
+                    
+                elif event == "end":
                     if element.text is not None:
                         lexical_entry["lemma"] = element.text.strip()
-                elif event == "end":
+                        
                     current = previous
                     previous = None
 
@@ -77,9 +79,11 @@ class Parser:
                 if event == "start":
                     previous = current
                     current = element.tag
+                    
+                elif event == "end":
                     if element.text is not None:
                         lexical_entry["status"] = element.text.strip()
-                elif event == "end":
+
                     current = previous
                     previous = None
 
@@ -87,11 +91,13 @@ class Parser:
                 if event == "start":
                     previous = current
                     current = element.tag
+                    
+
+                elif event == "end":
                     freq = element.find(".//measure")
                     if freq is not None and freq.text is not None:
                         lexical_entry["frequency"] = freq.text.strip()
 
-                elif event == "end":
                     current = previous
                     previous = None
 
@@ -99,6 +105,9 @@ class Parser:
                 if event == "start":
                     previous = current
                     current = element.tag
+                    
+
+                elif event == "end":
                     lexical_entry["source"] = fname
                     lexical_entry["id"] = element.attrib["sloleksId"]
                     lexical_entry["sloleks_key"] = element.attrib["sloleksKey"]
@@ -107,7 +116,6 @@ class Parser:
                     if lexeme is not None and lexeme.text is not None:
                         lexical_entry["lexeme"] = lexeme.text.strip()
 
-                elif event == "end":
                     current = previous
                     previous = None
 
@@ -116,6 +124,7 @@ class Parser:
                     previous = current
                     current = element.tag
 
+                elif event == "end":
                     category = element.find(".//category")
                     if category is not None and category.text is not None:
                         lexical_entry["category"] = category.text.strip()
@@ -132,7 +141,6 @@ class Parser:
                     if subcategory is not None and subcategory.text is not None:
                         lexical_entry["aspect"] = subcategory.text.strip()
 
-                elif event == "end":
                     current = previous
                     previous = None
 
@@ -234,7 +242,7 @@ class Parser:
                     accentuations = element.findall(".//accentuation/form")
 
                     if len(accentuations) == 0: 
-                        print(f'no accentuations! {lexical_entry["lemma"]} {word_form["form_1"]} {len(accentuations)}')
+                        print(f'no accentuations! {word_form["form_1"]} {len(accentuations)}')
                         #accentuations = element.findall(".//accentuation/form")
                         #print(etree.tostring(element, pretty_print=True))
                         
@@ -254,7 +262,7 @@ class Parser:
                     pronunciations = element.findall(".//pronunciationList/pronunciation")
 
                     if len(pronunciations) == 0: 
-                        print(f'no pronunciations! {lexical_entry["lemma"]} {word_form["form_1"]} {len(pronunciations)}')
+                        print(f'no pronunciations! {word_form["form_1"]} {len(pronunciations)}')
                     #    pronunciations = element.findall(".//pronunciationList/pronunciation")
                     #    print(etree.tostring(element, pretty_print=True))
                         

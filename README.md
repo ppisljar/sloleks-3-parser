@@ -1,8 +1,8 @@
 # Morphological lexicon Sloleks 3.0 parser
 
 ## What does this parser do?
-This parser will extract all data from the the 1.5 GB XML file [found here](https://www.clarin.si/repository/xmlui/handle/11356/1745)
-and put it in a SQLite database so that it can be used for further processing.
+This parser will extract all data from the the 13 GB of XML [found here](https://www.clarin.si/repository/xmlui/handle/11356/1745)
+and put it in a 1GB SQLite database so that it can be used for further processing.
 
 apart from converting to sql it also does the following:
 - removes diplicate prouciations, accentuations, forms and lemmas
@@ -18,17 +18,27 @@ apart from converting to sql it also does the following:
 ## How did you extract the XML data?
 Like this:
 ```bash
-# download the data
-./get_data.sh
 # activate a Python virtual environment
 python3 -m venv env && source env/bin/activate
 # install all dependencies
 pip install -r requirements.txt
+# download the data
+./get_data.sh
 # run the parser
 python convert.py
 ```
 
-After about 45 min the data will get transferred to a 1 GB SQLite database called `sloleks.db`.
+After about 1 hour the data will get transferred to a 1 GB SQLite database called `sloleks.db`.
+
+dump was then generated with
+```
+sqlite3 sample.db .dump > dump.sql.
+```
+
+## pubished SQL database
+
+you can find exported sqlite file here: https://huggingface.co/datasets/ppisljar/sloleks-3-sql/blob/main/sloleks.db
+and the sql dump file which can be used to import the database to other SQLs (mysql, postgre, ...) is here: https://huggingface.co/datasets/ppisljar/sloleks-3-sql/blob/main/sloleks.dump.sql
 
 ## Citations
  title = {Morphological lexicon Sloleks 3.0},	

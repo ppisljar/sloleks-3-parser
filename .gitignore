@@ -135,3 +135,7 @@ Sloleks*.zip
 *.db.gz
 *.json
 ._*
+
+*.sql
+*.xml
+*.zip

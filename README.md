@@ -2,7 +2,7 @@
 
 ## What does this parser do?
 This parser will extract all data from the the 13 GB of XML [found here](https://www.clarin.si/repository/xmlui/handle/11356/1745)
-and put it in a 1GB SQLite database so that it can be used for further processing.
+and put it in a SQLite database so that it can be used for further processing.
 
 apart from converting to sql it also does the following:
 - removes diplicate prouciations, accentuations, forms and lemmas
@@ -28,11 +28,11 @@ pip install -r requirements.txt
 python convert.py
 ```
 
-After about 1 hour the data will get transferred to a 1 GB SQLite database called `sloleks.db`.
+After about 1 hour the data will get transferred to a 2 GB SQLite database called `sloleks.db`.
 
 dump was then generated with
 ```
-sqlite3 sample.db .dump > dump.sql.
+sqlite3 sloleks.db .dump > sloleks.dump.sql
 ```
 
 

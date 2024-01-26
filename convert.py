@@ -12,24 +12,38 @@ from app.models import LexicalEntry, WordForm
 from app.parser import Parser
 from app.progress_bar import TqdmStream
 
+duplicates = {}
 
 class Sloleks:
     def __init__(self, *args, **kwargs):
         self._verbose = kwargs.get("verbose", False)
-        self._logger = self._setup_logger(log_file=kwargs.get("log_file", None))
-        self._file = "Sloleks.3.0.zip"
+        #self._logger = self._setup_logger(log_file=kwargs.get("log_file", None))
+        self._file = "Sloleks.3.0.zip" 
         if not isfile(realpath(self._file)):
             raise FileNotFoundError("{} does not exist".format(self._file))
 
     def get_data(self):
-        with session_scope(logger=self._logger) as session:
-            p = Parser(session=session, logger=self._logger, verbose=self._verbose)
+        with session_scope() as session:
+            p = Parser(session=session, logger=None, verbose=self._verbose)
 
             i = 0
             for lx in tqdm(
                 p.get_lexical_entries(zip_filename=self._file)
             ):
                 i = i+1
+                
+                if session.query(LexicalEntry).get(lx["id"]):
+                    if lx["id"] not in duplicates: duplicates[lx["id"]] = 0
+
+                    duplicates[lx["id"]] = duplicates[lx["id"]] + 1
+                    idnr = duplicates[lx["id"]]
+                    lx["id"] = lx["id"] + "_" + str(idnr)
+                    lx["sloleks_key"] = lx["sloleks_key"] + "_" + str(idnr)
+
+                    #if self._verbose:
+                    #self._logger.info(f"duplicate lexical entity: {lx['id']} {idnr}")
+                    # print(lx)
+
                 lexical_entry = LexicalEntry(
                     **{
                         key: val
@@ -37,28 +51,40 @@ class Sloleks:
                         if key not in {"word_forms"}
                     },
                 )
-                if not session.query(LexicalEntry).get(lx["id"]):
-                    session.add(lexical_entry)
-                else:
-                    #if self._verbose:
-                    self._logger.info(
-                        f"Skipping lexical entity: {lx['id']}"
-                    )
+                session.add(lexical_entry)
 
+                
                 for wf in lx["word_forms"]:
-                    word_form = WordForm(
-                        **{
-                            key: val
-                            for key, val in wf.items()
-                            if key not in {"form_representations"}
-                        },
-                        lexical_entry_id=lx["id"]
-                    )
+                    
+                    wforms = {}
+                    for x in [1,2,3,4,5,6]:
+                        if "form_"+str(x) not in wf: break
+
+                        if wf["form_"+str(x)] in wforms:
+                            print(f'duplicte form for lemma {lx["lemma"]}: {wf["form_"+str(x)]}')
+                            continue
+                        
+                        wforms[wf["form_"+str(x)]] = 1
+
+                        # each form should be a separate entry
+                        word_form = WordForm(
+                            **{
+                                key: val
+                                for key, val in wf.items()
+                                if key not in {"form_representations", "form_1", "form_2", "form_3", "form_4", "form_5", "form_6", "ACC_5", "ACC_6", "ACC_7", "ACC_8", "ACC_9", "ACC_10", "IPA_5", "IPA_6", "IPA_7", "IPA_8", "IPA_9", "IPA_10", "SAMPA_5", "SAMPA_6", "SAMPA_7", "SAMPA_8", "SAMPA_9", "SAMPA_10", "frequency_1", "frequency_2", "frequency_3", "frequency_4", "frequency_5", "frequency_6", "frequency_7", "frequency_8", "frequency_9", "frequency_10"}
+                            },
+                            lexical_entry_id=lx["id"],
+                            form=wf["form_"+str(x)],
+                            frequency=wf["frequency_"+str(x)] if "frequency_"+str(x) in wf else 0
+                            # acc, sampa and ipa .... how to match them to forms ? for now we leave it out with plan to regenerate them
+                        )
                     i = i + 1
                     session.add(word_form)
 
-                if 1 % 1000 == 0:
+                if i % 10 == 0:
                     session.commit()
+            session.commit()
+            print(duplicates)
                 
 
     @classmethod
@@ -94,11 +120,7 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    try:
-        lex = Sloleks(
-            log_file=args.log_file, verbose=args.verbose
-        )
-        lex.get_data()
-    except KeyboardInterrupt:
-        print("\nProcess interrupted Exiting...")
-        sys.exit(1)
+    lex = Sloleks(
+        log_file=args.log_file, verbose=args.verbose
+    )
+    lex.get_data()

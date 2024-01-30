@@ -5,6 +5,14 @@ from os.path import isfile
 from lxml import etree
 from sqlalchemy.orm import Session
 
+from slovene_g2p import SloveneG2P
+from slovene_form_generator import Mte6Translate, PatternPredictor
+from slovene_accentuator import SloveneAccentuator
+
+mte_translate = Mte6Translate()
+accentuator = SloveneAccentuator()
+predictor = PatternPredictor()
+g2p = SloveneG2P()
 
 class Parser:
     def __init__(self, *args, **kwargs):
@@ -71,7 +79,7 @@ class Parser:
                 elif event == "end":
                     if element.text is not None:
                         lexical_entry["lemma"] = element.text.strip()
-                        
+
                     current = previous
                     previous = None
 
@@ -154,7 +162,7 @@ class Parser:
                     msd = element.find("msd")
                     if msd is not None and msd.text is not None:
                         word_form["msd"] = msd.text.strip()
-                        lexical_entry["msd"] = msd.text.strip()
+                        lexical_entry["msd"] = mte_translate.get_lemma_msd(msd.text.strip())
                         word_form["msd_language"] = msd.get("language")
                         word_form["msd_system"] = msd.get("system")
 
@@ -284,6 +292,11 @@ class Parser:
                                 word_form["SAMPA_" + str(p)] = sampa_form.text.strip()
 
 
+                    if "IPA_1" not in word_form:
+                        word_form["IPA_1"] = g2p.ipa(word_form["form_1"], word_form["msd"], predictor.predict_morphological_pattern(lexical_entry["lemma"], word_form["msd"]))
+
+                    if "SAMPA_1" not in word_form:
+                        word_form["SAMPA_1"] = g2p.sampa(word_form["form_1"], word_form["msd"], predictor.predict_morphological_pattern(lexical_entry["lemma"], word_form["msd"]))
                 
                     current = previous
                     previous = None
